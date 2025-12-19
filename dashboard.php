@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 $sql1 = "SELECT * FROM article ORDER BY tanggal DESC";
 $hasil1 = $conn->query($sql1);
@@ -9,76 +8,51 @@ $sql2 = "SELECT * FROM gallery ORDER BY tanggal DESC";
 $hasil2 = $conn->query($sql2);
 
 $jumlah_gallery = $hasil2->num_rows;
+
+$hasil_users = $conn->query('SELECT * FROM users');
+$jumlah_users = $hasil_users->num_rows;
 ?>
-<div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center pt-4">
-    <div class="col">
+<div class="row g-4 justify-content-center pt-4">
+    <div class="col-md-4">
         <div class="card border border-danger mb-3 shadow" style="max-width: 18rem;">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div class="p-3">
-                        <h5 class="card-title"><i class="bi bi-newspaper"></i> Article</h5> 
+                        <h5 class="card-title"><i class="bi bi-newspaper"></i> Article</h5>
                     </div>
                     <div class="p-3">
                         <span class="badge rounded-pill text-bg-danger fs-2"><?= $jumlah_article?></span>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>
-    </div> 
-    <div class="col">
+    </div>
+    <div class="col-md-4">
         <div class="card border border-danger mb-3 shadow" style="max-width: 18rem;">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div class="p-3">
-                        <h5 class="card-title"><i class="bi bi-camera"></i> Gallery</h5> 
+                        <h5 class="card-title"><i class="bi bi-camera"></i> Gallery</h5>
                     </div>
                     <div class="p-3">
                         <span class="badge rounded-pill text-bg-danger fs-2"><?= $jumlah_gallery?></span>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>
-    </div> 
-=======
-<?php
-$sql1 = "SELECT * FROM article ORDER BY tanggal DESC";
-$hasil1 = $conn->query($sql1);
-
-$jumlah_article = $hasil1->num_rows;
-
-$sql2 = "SELECT * FROM gallery ORDER BY tanggal DESC";
-$hasil2 = $conn->query($sql2);
-
-$jumlah_gallery = $hasil2->num_rows;
-?>
-<div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center pt-4">
-    <div class="col">
+    </div>
+    <div class="col-md-4">
         <div class="card border border-danger mb-3 shadow" style="max-width: 18rem;">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div class="p-3">
-                        <h5 class="card-title"><i class="bi bi-newspaper"></i> Article</h5> 
+                        <h5 class="card-title"><i class="bi bi-camera"></i> Users</h5>
                     </div>
                     <div class="p-3">
-                        <span class="badge rounded-pill text-bg-danger fs-2"><?= $jumlah_article?></span>
-                    </div> 
+                        <span class="badge rounded-pill text-bg-danger fs-2"><?= $jumlah_users?></span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div> 
-    <div class="col">
-        <div class="card border border-danger mb-3 shadow" style="max-width: 18rem;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div class="p-3">
-                        <h5 class="card-title"><i class="bi bi-camera"></i> Gallery</h5> 
-                    </div>
-                    <div class="p-3">
-                        <span class="badge rounded-pill text-bg-danger fs-2"><?= $jumlah_gallery?></span>
-                    </div> 
-                </div>
-            </div>
-        </div>
-    </div> 
->>>>>>> 57919dee0636b493801ef5d1e6b7fb58cd4d2537
+    </div>
 </div>
