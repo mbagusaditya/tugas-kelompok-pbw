@@ -2,26 +2,28 @@
 require_once __DIR__ . "/../koneksi.php";
 
 $page = $_GET['page'] ?? 1;
+$limit = 2;
+$offset = $limit * ($page - 1);
 
-$stmt = $conn->prepare('SELECT * FROM users LIMIT 10 OFFSET ?');
+$stmt = $conn->prepare('SELECT * FROM users WHERE username <> "admin" ORDER BY username ASC LIMIT ? OFFSET ?');
 
-$stmt->bind_param('d', $page);
+$stmt->bind_param('ii', $limit, $offset);
 
 $stmt->execute();
 
 // $data = [];
 $result = $stmt->get_result();
+$no = ($page - 1) * $limit + 1;
 
 while ($nextData = $result->fetch_assoc()) {
     // $data[] = $nextData;
-    $no = ($page - 1) * 10 + 1;
     $id = $nextData['id'];
-    $nama = $nextData['nama'];
+    $username = $nextData['username'];
     $password = $nextData['password'];
 
     echo "<tr>
         <td>$no</td>
-        <td>$nama</td>
+        <td>$username</td>
         <td>$password</td>
         <td>
             <div class=\"d-flex\">
@@ -37,4 +39,5 @@ while ($nextData = $result->fetch_assoc()) {
             </div>
         </td>
     </tr>";
+    $no++;
 }

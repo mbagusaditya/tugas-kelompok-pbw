@@ -37,7 +37,8 @@ if ($_SESSION['username'] !== 'admin') {
             }
         </style>
     </head>
-    <body>
+    <!--<body>-->
+    <body class="d-grid min-vh-100" style="grid-template-rows: auto 1fr auto; grid-template-columns: 1fr;">
         <!-- nav begin -->
         <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top bg-danger-subtle">
         <div class="container">
@@ -65,7 +66,7 @@ if ($_SESSION['username'] !== 'admin') {
                     <a class="nav-link" href="admin.php?page=article">Article</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="admin.php?page=article">Gallery</a>
+                    <a class="nav-link" href="admin.php?page=gallery">Gallery</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="admin.php?page=users">User</a>
@@ -129,10 +130,16 @@ if ($_SESSION['username'] !== 'admin') {
         <div>Aprilyani Nur Safitri &copy; 2023</div>
         </footer>
         <!-- footer end -->
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"
         ></script>
+
+        <?php
+            if (function_exists("scriptGetPaginate")) scriptGetPaginate();
+        ?>
     </body>
     </html>

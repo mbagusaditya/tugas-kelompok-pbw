@@ -3,8 +3,8 @@ date_default_timezone_set('Asia/Jakarta');
 
 $servername = "127.0.0.1";
 $username = "root";
-$password = "";
-$db = "pbw";
+$password = "root";
+$db = "my_pbw";
 
 //create connection
 $conn = new mysqli($servername,$username,$password,$db);
