@@ -17,18 +17,26 @@
                 </thead>
                 <tbody>
                     <?php
-                    $sql = "SELECT * FROM article ORDER BY tanggal DESC";
+                    $limit = 5;
+                    $page = isset($_GET['p']) ? (int)$_GET['p'] : 1;
+                    $mulai = ($page > 1) ? ($page * $limit) - $limit : 0;
+                    
+                    $result = $conn->query("SELECT * FROM article");
+                    $total_records = $result->num_rows;
+                    $pages = ceil($total_records / $limit);
+
+                    $sql = "SELECT * FROM article ORDER BY tanggal DESC LIMIT $mulai, $limit";
                     $hasil = $conn->query($sql);
 
-                    $no = 1;
+                    $no = $mulai + 1;
                     while ($row = $hasil->fetch_assoc()) {
                     ?>
                         <tr>
                             <td><?= $no++ ?></td>
                             <td>
                                 <strong><?= $row["judul"] ?></strong>
-                                <br>pada : <?= $row["tanggal"] ?>
-                                <br>oleh : <?= $row["username"] ?>
+                                <br>Dibuat tanggal : <?= $row["tanggal"] ?>
+                                <br>Dibuat oleh : <?= $row["username"] ?>
                             </td>
                             <td><?= $row["isi"] ?></td>
                             <td>
@@ -126,6 +134,40 @@
                 </tbody>
             </table>
         </div>
+
+        <nav class="mb-2">
+            <ul class="pagination justify-content-end">
+                <li class="page-item">
+                    <a class="page-link" href="admin.php?page=article&p=1">First</a>
+                </li>
+                <?php 
+                $prev = $page - 1;
+                if($prev < 1) $prev = 1;
+                ?>
+                <li class="page-item">
+                    <a class="page-link" href="admin.php?page=article&p=<?= $prev ?>">Previous</a>
+                </li>
+                <?php
+                for ($i = 1; $i <= $pages; $i++) {
+                ?>
+                    <li class="page-item <?= ($page == $i) ? 'active' : '' ?>">
+                        <a class="page-link" href="admin.php?page=article&p=<?= $i ?>"><?= $i ?></a>
+                    </li>
+                <?php
+                }
+                ?>
+                <?php 
+                $next = $page + 1;
+                if($next > $pages) $next = $pages;
+                ?>
+                <li class="page-item">
+                    <a class="page-link" href="admin.php?page=article&p=<?= $next ?>">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="admin.php?page=article&p=<?= $pages ?>">Last</a>
+                </li>
+            </ul>
+        </nav>
 
         <!-- Awal Modal Tambah-->
         <div class="modal fade" id="modalTambah" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

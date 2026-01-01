@@ -41,7 +41,7 @@ if ($_SESSION['username'] !== 'admin') {
         <!-- nav begin -->
         <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top bg-danger-subtle">
         <div class="container">
-            <a class="navbar-brand" href="">My Daily Journal</a>
+            <a class="navbar-brand" href="index.php">My Daily Journal</a>
             <button
             class="navbar-toggler"
             type="button"

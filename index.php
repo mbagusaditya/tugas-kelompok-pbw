@@ -22,7 +22,7 @@ include "koneksi.php";
   </head>
   <body>
     <!-- nav begin -->
-    <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top">
+    <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top" id="navbar">
       <div class="container">
         <a class="navbar-brand" href="#">My Daily Journal</a>
         <button
@@ -54,23 +54,24 @@ include "koneksi.php";
               <a class="nav-link" href="#aboutme">About Me</a>
             </li>
             <?php
-                if (!isset($_SESSION['username'])):
+            if (isset($_SESSION['username'])):
             ?>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <?= $_SESSION['username'] ?>
+                </a>
+                <ul class="dropdown-menu">
+                    <?php if ($_SESSION['username'] === 'admin'): ?>
+                        <li><a class="dropdown-item" href="admin.php">Dashboard</a></li>
+                    <?php endif; ?>
+                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                </ul>
+            </li>
+            <?php else: ?>
             <li class="nav-item">
               <a class="nav-link" href="login.php">Login</a>
             </li>
-            <?php
-                endif;
-            ?>
-            <?php
-                if (isset($_SESSION['username']) && $_SESSION['username'] === 'admin'):
-            ?>
-            <li class="nav-item">
-              <a class="nav-link" href="admin.php">Dashboard</a>
-            </li>
-            <?php
-                endif;
-            ?>
+            <?php endif; ?>
             <button
               type="button"
               class="btn btn-dark theme"
@@ -116,22 +117,22 @@ include "koneksi.php";
     <!-- article begin -->
     <section id="article" class="text-center p-5">
       <div class="container">
-        <h1 class="fw-bold display-4 pb-3">article</h1>
-        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+        <h1 class="fw-bold display-4 pb-3">Article</h1>
+        <div class="row flex-nowrap overflow-x-auto g-4" style="padding-bottom: 20px;">
           <?php
-          $sql = "SELECT * FROM articles ORDER BY tanggal DESC";
+          $sql = "SELECT * FROM article ORDER BY tanggal DESC";
           $hasil = $conn->query($sql);
 
           $no = 1;
           while($row = $hasil->fetch_assoc()){
             ?>
-            <div class="col">
+            <div class="col-8 col-md-4 flex-shrink-0 article-item">
               <div class="card h-100">
                 <img src="img/<?= $row["gambar"]?>" class="card-img-top" alt="..." />
                 <div class="card-body">
                   <h5 class="card-title"><?= $row["judul"]?></h5>
                   <p class="card-text">
-                    <?= $row["isi"]?>
+                    <?= mb_strimwidth(strip_tags($row["isi"]), 0, 200, "...") ?>
                   </p>
                 </div>
                 <div class="card-footer">
@@ -139,19 +140,99 @@ include "koneksi.php";
                     <?= $row["tanggal"]?>
                   </small>
                 </div>
+                <div class="card-footer">
+                   <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#articleModal<?= $row["id"] ?>">
+                      Detail
+                    </button>
+                </div>
               </div>
+            </div>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="articleModal<?= $row["id"] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content text-black">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><?= $row["judul"]?></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <img src="img/<?= $row["gambar"]?>" class="img-fluid mb-3" alt="...">
+                    <p><?= $row["isi"]?></p>
+                    <small class="text-muted">Posted on <?= $row["tanggal"]?></small>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <?php
           }
           ?>
-            </div>
         </div>
+        <div class="text-center mt-3">
+          <button class="btn btn-sm btn-danger d-none" id="showLessBtn">Tampilkan Sedikit</button>
+          <button class="btn btn-sm btn-success d-none" id="showMoreBtn">Tampilkan Banyak</button>
+        </div>
+
+        <script>
+            const visibleStep = 3;
+            let visibleCount = 3; // Initial visible count
+            const articles = document.querySelectorAll('.article-item');
+            const showMoreBtn = document.getElementById('showMoreBtn');
+            const showLessBtn = document.getElementById('showLessBtn');
+
+            function updateVisibility() {
+                articles.forEach((article, index) => {
+                    if (index < visibleCount) {
+                        article.classList.remove('d-none');
+                    } else {
+                        article.classList.add('d-none');
+                    }
+                });
+
+                // Update Show More Button Visibility
+                if (visibleCount >= articles.length) {
+                    showMoreBtn.classList.add('d-none');
+                } else {
+                    showMoreBtn.classList.remove('d-none');
+                }
+
+                // Update Show Less Button Visibility
+                if (visibleCount > visibleStep) {
+                    showLessBtn.classList.remove('d-none');
+                } else {
+                    showLessBtn.classList.add('d-none');
+                }
+            }
+
+            if (showMoreBtn) {
+              showMoreBtn.addEventListener('click', () => {
+                  visibleCount += visibleStep;
+                  updateVisibility();
+              });
+            }
+
+            if (showLessBtn) {
+              showLessBtn.addEventListener('click', () => {
+                  visibleCount -= visibleStep;
+                  // Ensure we don't go below the step
+                  if (visibleCount < visibleStep) visibleCount = visibleStep;
+                  updateVisibility();
+              });
+            }
+
+            // Initial call
+            updateVisibility();
+        </script>
       </div>
     </section>
     <!-- article end -->
     <!-- gallery begin -->
     <section id="gallery" class="text-center p-5 bg-danger-subtle">
       <div class="container">
-        <h1 class="fw-bold display-4 pb-3">gallery</h1>
+        <h1 class="fw-bold display-4 pb-3">Gallery</h1>
         <div id="carouselExample" class="carousel slide">
           <div class="carousel-inner">
             <div class="carousel-item active">
@@ -192,7 +273,7 @@ include "koneksi.php";
     <!-- schedule begin -->
     <section id="schedule" class="text-center p-5">
       <div class="container">
-        <h1 class="fw-bold display-4 pb-3">schedule</h1>
+        <h1 class="fw-bold display-4 pb-3">Schedule</h1>
         <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
           <div class="col">
             <div class="card h-100">
@@ -339,28 +420,23 @@ include "koneksi.php";
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script type="text/javascript">
       document.getElementById("dark").onclick = function () {
-        document.body.style.backgroundColor = "black";
+        document.body.style.backgroundColor = "#222"; // Dark Grey background
 
-        document
-          .getElementById("hero")
-          .classList.remove("bg-danger-subtle", "text-black");
-        document
-          .getElementById("hero")
-          .classList.add("bg-secondary", "text-white");
+        const navbar = document.getElementById("navbar");
+        navbar.classList.remove("bg-body-tertiary");
+        navbar.classList.add("bg-dark", "navbar-dark");
 
-        document
-          .getElementById("gallery")
-          .classList.remove("bg-danger-subtle", "text-black");
-        document
-          .getElementById("gallery")
-          .classList.add("bg-secondary", "text-white");
+        const hero = document.getElementById("hero");
+        hero.classList.remove("bg-danger-subtle", "text-black");
+        hero.classList.add("bg-dark", "text-white");
 
-        document
-          .getElementById("aboutme")
-          .classList.remove("bg-danger-subtle", "text-black");
-        document
-          .getElementById("aboutme")
-          .classList.add("bg-secondary", "text-white");
+        const gallery = document.getElementById("gallery");
+        gallery.classList.remove("bg-danger-subtle", "text-black");
+        gallery.classList.add("bg-dark", "text-white");
+
+        const aboutme = document.getElementById("aboutme");
+        aboutme.classList.remove("bg-danger-subtle", "text-black");
+        aboutme.classList.add("bg-dark", "text-white");
 
         document.getElementById("footer").classList.remove("text-black");
         document.getElementById("footer").classList.add("text-white");
@@ -373,38 +449,34 @@ include "koneksi.php";
 
         const collection = document.getElementsByClassName("card");
         for (let i = 0; i < collection.length; i++) {
-          collection[i].classList.add("bg-secondary", "text-white");
+          collection[i].classList.add("bg-dark", "text-white", "border-secondary");
+          collection[i].classList.remove("bg-white", "text-dark"); // Ensure default card styles are removed if necessary
         }
 
         const collection2 = document.getElementsByClassName("list-group-item");
         for (let i = 0; i < collection2.length; i++) {
-          collection2[i].classList.add("bg-secondary", "text-white");
+          collection2[i].classList.add("bg-dark", "text-white", "border-secondary");
         }
       };
 
       document.getElementById("light").onclick = function () {
         document.body.style.backgroundColor = "white";
 
-        document
-          .getElementById("hero")
-          .classList.remove("bg-secondary", "text-white");
-        document
-          .getElementById("hero")
-          .classList.add("bg-danger-subtle", "text-black");
+        const navbar = document.getElementById("navbar");
+        navbar.classList.remove("bg-dark", "navbar-dark");
+        navbar.classList.add("bg-body-tertiary");
 
-        document
-          .getElementById("gallery")
-          .classList.remove("bg-secondary", "text-white");
-        document
-          .getElementById("gallery")
-          .classList.add("bg-danger-subtle", "text-black");
+        const hero = document.getElementById("hero");
+        hero.classList.remove("bg-dark", "text-white");
+        hero.classList.add("bg-danger-subtle", "text-black");
 
-        document
-          .getElementById("aboutme")
-          .classList.remove("bg-secondary", "text-white");
-        document
-          .getElementById("aboutme")
-          .classList.add("bg-danger-subtle", "text-black");
+        const gallery = document.getElementById("gallery");
+        gallery.classList.remove("bg-dark", "text-white");
+        gallery.classList.add("bg-danger-subtle", "text-black");
+
+        const aboutme = document.getElementById("aboutme");
+        aboutme.classList.remove("bg-dark", "text-white");
+        aboutme.classList.add("bg-danger-subtle", "text-black");
 
         document.getElementById("footer").classList.remove("text-white");
         document.getElementById("footer").classList.add("text-black");
@@ -417,12 +489,13 @@ include "koneksi.php";
 
         const collection = document.getElementsByClassName("card");
         for (let i = 0; i < collection.length; i++) {
-          collection[i].classList.remove("bg-secondary", "text-white");
+          collection[i].classList.remove("bg-dark", "text-white", "border-secondary");
+          collection[i].classList.add("bg-white", "text-dark");
         }
 
         const collection2 = document.getElementsByClassName("list-group-item");
         for (let i = 0; i < collection2.length; i++) {
-          collection2[i].classList.remove("bg-secondary", "text-white");
+          collection2[i].classList.remove("bg-dark", "text-white", "border-secondary");
         }
       };
     </script>
