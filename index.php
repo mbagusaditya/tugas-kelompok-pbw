@@ -53,15 +53,13 @@ include "koneksi.php";
             <li class="nav-item">
               <a class="nav-link" href="#aboutme">About Me</a>
             </li>
-            <?php
-            if (isset($_SESSION['username'])):
-            ?>
+            <?php if (isset($_SESSION["username"])): ?>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <?= $_SESSION['username'] ?>
+                    <?= $_SESSION["username"] ?>
                 </a>
                 <ul class="dropdown-menu">
-                    <?php if ($_SESSION['username'] === 'admin'): ?>
+                    <?php if ($_SESSION["username"] === "admin"): ?>
                         <li><a class="dropdown-item" href="admin.php">Dashboard</a></li>
                     <?php endif; ?>
                     <li><a class="dropdown-item" href="logout.php">Logout</a></li>
@@ -124,42 +122,53 @@ include "koneksi.php";
           $hasil = $conn->query($sql);
 
           $no = 1;
-          while($row = $hasil->fetch_assoc()){
-            ?>
+          while ($row = $hasil->fetch_assoc()) { ?>
             <div class="col-8 col-md-4 flex-shrink-0 article-item">
               <div class="card h-100">
-                <img src="img/<?= $row["gambar"]?>" class="card-img-top" alt="..." />
+                <img src="img/<?= $row[
+                    "gambar"
+                ] ?>" class="card-img-top" alt="..." />
                 <div class="card-body">
-                  <h5 class="card-title"><?= $row["judul"]?></h5>
+                  <h5 class="card-title"><?= $row["judul"] ?></h5>
                   <p class="card-text">
                     <?= mb_strimwidth(strip_tags($row["isi"]), 0, 200, "...") ?>
                   </p>
                 </div>
                 <div class="card-footer">
                   <small class="text-body-secondary">
-                    <?= $row["tanggal"]?>
+                    <?= $row["tanggal"] ?>
                   </small>
                 </div>
                 <div class="card-footer">
-                   <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#articleModal<?= $row["id"] ?>">
+                   <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#articleModal<?= $row[
+                       "id"
+                   ] ?>">
                       Detail
                     </button>
                 </div>
               </div>
             </div>
-            
+
             <!-- Modal -->
-            <div class="modal fade" id="articleModal<?= $row["id"] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="articleModal<?= $row[
+                "id"
+            ] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content text-black">
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel"><?= $row["judul"]?></h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><?= $row[
+                        "judul"
+                    ] ?></h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    <img src="img/<?= $row["gambar"]?>" class="img-fluid mb-3" alt="...">
-                    <p><?= $row["isi"]?></p>
-                    <small class="text-muted">Posted on <?= $row["tanggal"]?></small>
+                    <img src="img/<?= $row[
+                        "gambar"
+                    ] ?>" class="img-fluid mb-3" alt="...">
+                    <p><?= $row["isi"] ?></p>
+                    <small class="text-muted">Posted on <?= $row[
+                        "tanggal"
+                    ] ?></small>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -167,8 +176,7 @@ include "koneksi.php";
                 </div>
               </div>
             </div>
-            <?php
-          }
+            <?php }
           ?>
         </div>
         <div class="text-center mt-3">
@@ -241,7 +249,7 @@ include "koneksi.php";
             @media (min-width: 576px) { .masonry-grid { column-count: 2; } }
             @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
             @media (min-width: 992px) { .masonry-grid { column-count: 4; } }
-            
+
             .masonry-item {
                 break-inside: avoid;
                 margin-bottom: 1rem;
@@ -251,16 +259,18 @@ include "koneksi.php";
             <?php
             $sql = "SELECT * FROM gallery ORDER BY tanggal DESC";
             $hasil = $conn->query($sql);
-            while ($row = $hasil->fetch_assoc()) {
-            ?>
+            while ($row = $hasil->fetch_assoc()) { ?>
               <div class="masonry-item card">
-                <img src="img/<?= $row['gambar'] ?>" class="card-img-top" alt="Gallery Image" />
+                <img src="img/<?= $row[
+                    "gambar"
+                ] ?>" class="card-img-top" alt="Gallery Image" />
                 <div class="card-body">
-                  <p class="card-text small text-body-secondary"><?= $row['tanggal'] ?></p>
+                  <p class="card-text small text-body-secondary"><?= $row[
+                      "tanggal"
+                  ] ?></p>
                 </div>
               </div>
-            <?php
-            }
+            <?php }
             ?>
         </div>
       </div>

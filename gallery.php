@@ -16,10 +16,14 @@
                 </thead>
                 <tbody>
                     <?php
-                    $sql = "SELECT * FROM gallery ORDER BY tanggal DESC";
+                    $hlm = isset($_GET["hlm"]) ? $_GET["hlm"] : 1;
+                    $limit = 3;
+                    $limit_start = ($hlm - 1) * $limit;
+                    $no = $limit_start + 1;
+
+                    $sql = "SELECT * FROM gallery ORDER BY tanggal DESC LIMIT $limit_start, $limit";
                     $hasil = $conn->query($sql);
 
-                    $no = 1;
                     while ($row = $hasil->fetch_assoc()) { ?>
                         <tr>
                             <td><?= $no++ ?></td>
@@ -144,6 +148,61 @@
             </table>
         </div>
 
+        <?php
+        $sql1 = "SELECT * FROM gallery";
+        $hasil1 = $conn->query($sql1);
+        $total_records = $hasil1->num_rows;
+        ?>
+        <p>Total gallery : <?php echo $total_records; ?></p>
+        <nav class="mb-2">
+            <ul class="pagination justify-content-end">
+            <?php
+            $jumlah_page = ceil($total_records / $limit);
+            $jumlah_number = 1;
+            $start_number = $hlm > $jumlah_number ? $hlm - $jumlah_number : 1;
+            $end_number =
+                $hlm < $jumlah_page - $jumlah_number
+                    ? $hlm + $jumlah_number
+                    : $jumlah_page;
+
+            if ($hlm == 1) {
+                echo '<li class="page-item disabled"><a class="page-link" href="#">First</a></li>';
+                echo '<li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>';
+            } else {
+                $link_prev = $hlm > 1 ? $hlm - 1 : 1;
+                echo '<li class="page-item halaman"><a class="page-link" href="admin.php?page=gallery&hlm=1">First</a></li>';
+                echo '<li class="page-item halaman"><a class="page-link" href="admin.php?page=gallery&hlm=' .
+                    $link_prev .
+                    '">&laquo;</a></li>';
+            }
+
+            for ($i = $start_number; $i <= $end_number; $i++) {
+                $link_active = $hlm == $i ? " active" : "";
+                echo '<li class="page-item halaman ' .
+                    $link_active .
+                    '"><a class="page-link" href="admin.php?page=gallery&hlm=' .
+                    $i .
+                    '">' .
+                    $i .
+                    "</a></li>";
+            }
+
+            if ($hlm == $jumlah_page or $jumlah_page == 0) {
+                echo '<li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>';
+                echo '<li class="page-item disabled"><a class="page-link" href="#">Last</a></li>';
+            } else {
+                $link_next = $hlm < $jumlah_page ? $hlm + 1 : $jumlah_page;
+                echo '<li class="page-item halaman"><a class="page-link" href="admin.php?page=gallery&hlm=' .
+                    $link_next .
+                    '">&raquo;</a></li>';
+                echo '<li class="page-item halaman"><a class="page-link" href="admin.php?page=gallery&hlm=' .
+                    $jumlah_page .
+                    '">Last</a></li>';
+            }
+            ?>
+            </ul>
+        </nav>
+
         <div class="modal fade" id="modalTambah" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -261,5 +320,6 @@ if (isset($_POST["hapus"])) {
     $stmt->close();
     $conn->close();
 }
+
 
 ?>
