@@ -15,7 +15,7 @@
 
         function load_data(page) {
             $.ajax({
-                url: "article_data.php",
+                url: "articles/get.php",
                 method: "GET",
                 data: {
                     p: page
@@ -35,7 +35,7 @@
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Article</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form method="post" action="" enctype="multipart/form-data">
+                    <form method="post" action="articles/create.php" enctype="multipart/form-data">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="formGroupExampleInput" class="form-label">Judul</label>
@@ -61,110 +61,3 @@
         <!-- Akhir Modal Tambah-->
     </div>
 </div>
-
-<?php
-include "upload_foto.php";
-
-//jika tombol simpan diklik
-if (isset($_POST['simpan'])) {
-    $judul = $_POST['judul'];
-    $isi = $_POST['isi'];
-    $tanggal = date("Y-m-d H:i:s");
-    $username = $_SESSION['username'];
-    $gambar = '';
-    $nama_gambar = $_FILES['gambar']['name'];
-
-    //upload gambar
-    if ($nama_gambar != '') {
-        $cek_upload = upload_foto($_FILES["gambar"]);
-
-        if ($cek_upload['status']) {
-            $gambar = $cek_upload['message'];
-        } else {
-            echo "<script>
-                alert('" . $cek_upload['message'] . "');
-                document.location='admin.php?page=article';
-            </script>";
-            die;
-        }
-    }
-
-    if (isset($_POST['id'])) {
-        //update data
-        $id = $_POST['id'];
-
-        if ($nama_gambar == '') {
-            //jika tidak ganti gambar
-            $gambar = $_POST['gambar_lama'];
-        } else {
-            //jika ganti gambar, hapus gambar lama
-            unlink("img/" . $_POST['gambar_lama']);
-        }
-
-        $stmt = $conn->prepare("UPDATE article
-                                SET
-                                judul =?,
-                                isi =?,
-                                gambar = ?,
-                                tanggal = ?,
-                                username = ?
-                                WHERE id = ?");
-
-        $stmt->bind_param("sssssi", $judul, $isi, $gambar, $tanggal, $username, $id);
-        $simpan = $stmt->execute();
-    } else {
-        //insert data
-        $stmt = $conn->prepare("INSERT INTO article (judul,isi,gambar,tanggal,username)
-                                VALUES (?,?,?,?,?)");
-
-        $stmt->bind_param("sssss", $judul, $isi, $gambar, $tanggal, $username);
-        $simpan = $stmt->execute();
-    }
-
-    if ($simpan) {
-        echo "<script>
-            alert('Simpan data sukses');
-            document.location='admin.php?page=article';
-        </script>";
-    } else {
-        echo "<script>
-            alert('Simpan data gagal');
-            document.location='admin.php?page=article';
-        </script>";
-    }
-
-    $stmt->close();
-    $conn->close();
-}
-
-//jika tombol hapus diklik
-if (isset($_POST['hapus'])) {
-    $id = $_POST['id'];
-    $gambar = $_POST['gambar'];
-
-    if ($gambar != '') {
-        //hapus file gambar
-        unlink("img/" . $gambar);
-    }
-
-    $stmt = $conn->prepare("DELETE FROM article WHERE id =?");
-
-    $stmt->bind_param("i", $id);
-    $hapus = $stmt->execute();
-
-    if ($hapus) {
-        echo "<script>
-            alert('Hapus data sukses');
-            document.location='admin.php?page=article';
-        </script>";
-    } else {
-        echo "<script>
-            alert('Hapus data gagal');
-            document.location='admin.php?page=article';
-        </script>";
-    }
-
-    $stmt->close();
-    $conn->close();
-}
-?>
