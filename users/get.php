@@ -19,12 +19,15 @@ while ($nextData = $result->fetch_assoc()) {
     // $data[] = $nextData;
     $id = $nextData['id'];
     $username = $nextData['username'];
-    $password = $nextData['password'];
+    $nama = $nextData['nama'];
+    $email = $nextData['email'];
+    // $password = $nextData['password'];
 
     echo "<tr>
         <td>$no</td>
         <td>$username</td>
-        <td>$password</td>
+        <td>$nama</td>
+        <td>$email</td>
         <td>
             <div class=\"d-flex\">
             <a href=\"./admin.php?page=users/edit&id=$id\" class=\"btn btn-warning me-3\">Edit</a>

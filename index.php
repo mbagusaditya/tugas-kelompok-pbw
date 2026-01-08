@@ -1,6 +1,22 @@
 <?php
 session_start();
 include "koneksi.php";
+
+$user = null;
+
+if (isset($_SESSION['username'])) {
+    $username = $_SESSION['username'];
+
+    $stmt = $conn->prepare('SELECT * FROM users WHERE username = ? limit 1');
+    $stmt->bind_param('s', $username);
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    $user = $result->fetch_assoc();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +38,7 @@ include "koneksi.php";
   </head>
   <body>
     <!-- nav begin -->
-    <nav class="navbar navbar-expand-sm bg-body-tertiary sticky-top" id="navbar">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top" id="navbar">
       <div class="container">
         <a class="navbar-brand" href="#">My Daily Journal</a>
         <button
@@ -70,22 +86,28 @@ include "koneksi.php";
               <a class="nav-link" href="login.php">Login</a>
             </li>
             <?php endif; ?>
-            <button
-              type="button"
-              class="btn btn-dark theme"
-              id="dark"
-              title="dark"
-            >
-              <i class="bi bi-moon-stars-fill"></i>
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger theme"
-              id="light"
-              title="light"
-            >
-              <i class="bi bi-brightness-high"></i>
-            </button>
+
+            <div class="d-flex flex-column flex-sm-row ms-0 ms-lg-2 justify-content-stretch gap-3">
+                <button
+                type="button"
+                class="btn btn-dark theme "
+                id="dark"
+                title="dark"
+                style="flex-grow: 1;"
+                >
+                <i class="bi bi-moon-stars-fill"></i>
+                </button>
+
+                <button
+                type="button"
+                class="btn btn-danger theme"
+                id="light"
+                title="light"
+                style="flex-grow: 1;"
+                >
+                <i class="bi bi-brightness-high"></i>
+                </button>
+            </div>
           </ul>
         </div>
       </div>
@@ -94,20 +116,25 @@ include "koneksi.php";
     <!-- hero begin -->
     <section id="hero" class="text-center p-5 bg-danger-subtle text-sm-start">
       <div class="container">
-        <div class="d-sm-flex flex-sm-row-reverse align-items-center">
-          <img src="img/banner.jpg" class="img-fluid" width="300" />
-          <div>
-            <h1 class="fw-bold display-4">
-              Create Memories, Save Memories, Everyday
-            </h1>
-            <h4 class="lead display-6">
-              Mencatat semua kegiatan sehari-hari yang ada tanpa terkecuali
-            </h4>
-            <h6>
-              <span id="tanggal"></span>
-              <span id="jam"></span>
-            </h6>
-          </div>
+          <div class="row">
+            <div class="col-lg-8">
+            <div>
+                <h1 class="fw-bold display-4">
+                Create Memories, Save Memories, Everyday
+                </h1>
+                <h4 class="lead display-6">
+                Mencatat semua kegiatan sehari-hari yang ada tanpa terkecuali
+                </h4>
+                <h6>
+                <span id="tanggal"></span>
+                <span id="jam"></span>
+                </h6>
+            </div>
+            </div>
+
+            <div class="col-lg-4 justify-content-center justify-content-lg-end d-flex align-items-center">
+                <img src="img/banner.png" class="img-fluid" width="300" />
+            </div>
         </div>
       </div>
     </section>
@@ -358,21 +385,30 @@ include "koneksi.php";
       </div>
     </section>
     <!-- schedule end -->
+    <?php
+    if (isset($_SESSION['username'])):
+    ?>
+
+    <?php
+        $avatar = $user['avatar'] !== "" ? '/img/' . $user['avatar'] : '/img/user.png';
+    ?>
     <!-- about me begin -->
     <section id="aboutme" class="text-center p-5 bg-danger-subtle">
       <div class="container">
         <div class="d-sm-flex align-items-center justify-content-center">
-          <div class="p-3">
+          <div class="p-3 d-flex " style="max-width: 300px; width: 100%;">
             <img
-              src="img/profil.png"
+              src="<?= $avatar ?>"
               class="rounded-circle border shadow"
-              width="300"
+              style="width: 100%; aspect-ratio: 1/1; object-fit: cover; object-position: center;"
             />
           </div>
           <div class="p-md-5 text-sm-start">
-            <h3 class="lead">A11.2022.10000</h3>
-            <h1 class="fw-bold">Cahaya Jatmoko</h1>
-            Program Studi Teknik Informatika<br />
+            <h3 class="lead">Pemrograman Berbasis Web</h3>
+            <h1 class="fw-bold">
+                <?= $user['nama'] ?>
+            </h1>
+            Fakultas Ilmu Komputer<br />
             <a
               href="https://dinus.ac.id/"
               class="fw-bold text-decoration-none"
@@ -382,6 +418,9 @@ include "koneksi.php";
         </div>
       </div>
     </section>
+    <?php
+        endif;
+    ?>
     <!-- about me end -->
     <!-- footer begin -->
     <footer id="footer" class="text-center p-5">
@@ -396,7 +435,7 @@ include "koneksi.php";
           ><i class="bi bi-whatsapp h2 p-2"></i
         ></a>
       </div>
-      <div>Cahaya Jatmoko &copy; 2025</div>
+      <div>Kelompok 8 &copy; 2025</div>
     </footer>
     <!-- footer end -->
 

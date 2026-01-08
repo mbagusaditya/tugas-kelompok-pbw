@@ -1,13 +1,32 @@
 <?php
-include_once "./../koneksi.php";
+include_once __DIR__ .  "./../koneksi.php";
+include_once __DIR__ . "./../upload_foto.php";
 
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $username = $_POST['username'];
+        $nama = $_POST['nama'];
+        $email = $_POST['email'];
         $password = md5($_POST['password']);
+        $avatar = $_FILES['avatar'];
+        $lokasi_avatar = "";
 
-        $stmt = $conn->prepare('INSERT INTO users VALUES (null, ?, ?)');
+        if ($avatar['name'] != '') {
+            $cek_upload = upload_foto($_FILES["avatar"]);
 
-        $stmt->bind_param('ss', $username, $password);
+            if ($cek_upload['status']) {
+                $lokasi_avatar = $cek_upload['message'];
+            } else {
+                echo "<script>
+                    alert('" . $cek_upload['message'] . "');
+                    document.location='../admin.php?page=article';
+                </script>";
+                die;
+            }
+        }
+
+        $stmt = $conn->prepare('INSERT INTO users VALUES (null, ?, ?, ?, ?, ?)');
+
+        $stmt->bind_param('sssss', $username, $nama, $email, $password, $lokasi_avatar);
 
         $stmt->execute();
 
@@ -22,15 +41,30 @@ include_once "./../koneksi.php";
 
 <div class="card">
 <div class="card-body">
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" name="username" id="username" />
         </div>
 
         <div class="mb-3">
+            <label for="nama" class="form-label">Nama</label>
+            <input type="text" class="form-control" name="nama" id="nama" />
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" id="email" />
+        </div>
+
+        <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" name="password" id="password" />
+        </div>
+
+        <div class="mb-3">
+            <label for="avatar" class="form-label">Avatar</label>
+            <input type="file" class="form-control" name="avatar" id="avatar" />
         </div>
 
         <div class="d-flex justify-content-end">
