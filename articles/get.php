@@ -3,7 +3,7 @@
 include __DIR__ . "/../koneksi.php";
 
 // Menentukan jumlah data per halaman
-$limit = 5;
+$limit = 2;
 
 // Mengambil nomor halaman dari URL, jika tidak ada set ke halaman 1
 $page = isset($_GET['p']) ? (int)$_GET['p'] : 1;
@@ -49,38 +49,38 @@ $no = $mulai + 1;
             <tr>
                 <!-- Menampilkan nomor urut -->
                 <td><?= $no++ ?></td>
-                
+
                 <!-- Menampilkan judul, tanggal, dan username pembuat -->
                 <td>
                     <strong><?= $row["judul"] ?></strong>
                     <br>Dibuat tanggal : <?= $row["tanggal"] ?>
                     <br>Dibuat oleh : <?= $row["username"] ?>
                 </td>
-                
+
                 <!-- Menampilkan isi artikel -->
                 <td><?= $row["isi"] ?></td>
-                
+
                 <!-- Menampilkan gambar artikel jika ada -->
                 <td>
                     <?php
                     // Cek apakah ada gambar
                     if ($row["gambar"] != '') {
                         // Cek apakah file gambar ada di folder img
-                        if (file_exists('img/' . $row["gambar"] . '')) {
+                        if (file_exists('../img/' . $row["gambar"] . '')) {
                     ?>
                             <!-- Tampilkan gambar dengan lebar 100px -->
-                            <img src="img/<?= $row["gambar"] ?>" width="100">
+                            <img src="/img/<?= $row["gambar"] ?>" width="100">
                     <?php
                         }
                     }
                     ?>
                 </td>
-                
+
                 <!-- Kolom aksi untuk edit dan delete -->
                 <td>
                     <!-- Tombol edit yang membuka modal edit -->
                     <a href="#" title="edit" class="badge rounded-pill text-bg-success" data-bs-toggle="modal" data-bs-target="#modalEdit<?= $row["id"] ?>"><i class="bi bi-pencil"></i></a>
-                    
+
                     <!-- Tombol delete yang membuka modal konfirmasi hapus -->
                     <a href="#" title="delete" class="badge rounded-pill text-bg-danger" data-bs-toggle="modal" data-bs-target="#modalHapus<?= $row["id"] ?>"><i class="bi bi-x-circle"></i></a>
 
@@ -190,7 +190,7 @@ $no = $mulai + 1;
         <li class="page-item">
             <a class="page-link" href="#" onclick="load_data(1); return false;">First</a>
         </li>
-        <?php 
+        <?php
         // Menghitung halaman sebelumnya
         $prev = $page - 1;
         // Jika kurang dari 1, set ke 1
@@ -211,7 +211,7 @@ $no = $mulai + 1;
         <?php
         }
         ?>
-        <?php 
+        <?php
         // Menghitung halaman selanjutnya
         $next = $page + 1;
         // Jika lebih dari total halaman, set ke halaman terakhir

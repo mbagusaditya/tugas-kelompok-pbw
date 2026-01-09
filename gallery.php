@@ -17,7 +17,7 @@
                 <tbody>
                     <?php
                     $hlm = isset($_GET["hlm"]) ? $_GET["hlm"] : 1;
-                    $limit = 3;
+                    $limit = 2;
                     $limit_start = ($hlm - 1) * $limit;
                     $no = $limit_start + 1;
 

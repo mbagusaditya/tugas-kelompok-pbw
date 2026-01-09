@@ -4,6 +4,10 @@ function upload_foto($File){
 	$hasil = array();
 	$message = '';
 
+	// var_dump($File);
+	// var_dump(move_uploaded_file($File['tmp_name'], 'img/test.png'));
+	// die;
+
 	//File properties:
 	$FileName = $File['name'];
 	$TmpLocation = $File['tmp_name'];
@@ -36,7 +40,7 @@ function upload_foto($File){
 	}else{
 		//Create new filename:
         $NewName = date("YmdHis"). '.' . $FileExt;
-        $UploadDestination = "img/". $NewName;
+        $UploadDestination = __DIR__ . "/img/". $NewName;
 
 		if (move_uploaded_file($TmpLocation, $UploadDestination)) {
 			//echo "The file has been uploaded.";

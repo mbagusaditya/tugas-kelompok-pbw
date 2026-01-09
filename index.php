@@ -143,7 +143,7 @@ if (isset($_SESSION['username'])) {
     <section id="article" class="text-center p-5">
       <div class="container">
         <h1 class="fw-bold display-4 pb-3">Article</h1>
-        <div class="row flex-nowrap overflow-x-auto g-4" style="padding-bottom: 20px;">
+        <div class="row overflow-x-hidden g-4" style="padding-bottom: 20px;">
           <?php
           $sql = "SELECT * FROM article ORDER BY tanggal DESC";
           $hasil = $conn->query($sql);

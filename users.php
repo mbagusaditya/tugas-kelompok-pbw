@@ -1,5 +1,6 @@
 <?php
     require_once "koneksi.php";
+    session_start();
 ?>
 
 <div class="py-4">
@@ -9,6 +10,7 @@
   <thead>
     <tr>
       <th scope="col">#</th>
+      <th scope="col">Avatar</th>
       <th scope="col">Username</th>
       <th scope="col">Nama</th>
       <th scope="col">Email</th>
@@ -134,4 +136,17 @@ $(document).on('DOMContentLoaded', function() {
 
 <?php
     }
+?>
+
+<?php
+    if (isset($_SESSION['flash_message'])) :
+?>
+
+<script>
+alert('<?= $_SESSION["flash_message"] ?>')
+</script>
+
+<?php
+unset($_SESSION['flash_message']);
+endif;
 ?>

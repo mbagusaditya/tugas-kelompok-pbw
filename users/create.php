@@ -1,6 +1,7 @@
 <?php
 include_once __DIR__ .  "./../koneksi.php";
 include_once __DIR__ . "./../upload_foto.php";
+session_start();
 
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $username = $_POST['username'];
@@ -24,6 +25,12 @@ include_once __DIR__ . "./../upload_foto.php";
             }
         }
 
+        if (in_array('', [$nama, $username, $password, $email])) {
+            $_SESSION['flash_message'] = 'User baru gagal dibuat';
+            header('location: admin.php?page=users/create');
+            die;
+        }
+
         $stmt = $conn->prepare('INSERT INTO users VALUES (null, ?, ?, ?, ?, ?)');
 
         $stmt->bind_param('sssss', $username, $nama, $email, $password, $lokasi_avatar);
@@ -31,10 +38,12 @@ include_once __DIR__ . "./../upload_foto.php";
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {
+            $_SESSION['flash_message'] = 'User baru berhasil dibuat';
             header('location: admin.php?page=users');
             die;
         }
 
+        $_SESSION['flash_message'] = 'User baru gagal dibuat';
         header('location: admin.php?page=users/create');
     }
 ?>
@@ -73,3 +82,16 @@ include_once __DIR__ . "./../upload_foto.php";
     </form>
 </div>
 </div>
+
+<?php
+    if (isset($_SESSION['flash_message'])) :
+?>
+
+<script>
+alert('<?= $_SESSION['flash_message'] ?>')
+</script>
+
+<?php
+unset($_SESSION['flash_message']);
+endif;
+?>

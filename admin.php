@@ -129,7 +129,7 @@ if ($_SESSION['username'] !== 'admin') {
             ><i class="bi bi-whatsapp h2 p-2 text-dark"></i
             ></a>
         </div>
-        <div>Aprilyani Nur Safitri &copy; 2023</div>
+        <div>Kelompok 8 &copy; 2026</div>
         </footer>
         <!-- footer end -->
 

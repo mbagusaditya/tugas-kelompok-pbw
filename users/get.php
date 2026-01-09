@@ -18,6 +18,7 @@ $no = ($page - 1) * $limit + 1;
 while ($nextData = $result->fetch_assoc()) {
     // $data[] = $nextData;
     $id = $nextData['id'];
+    $avatar = '/img/'. ((isset($nextData['avatar']) && $nextData['avatar'] !== '') ? $nextData['avatar'] : 'user.png');
     $username = $nextData['username'];
     $nama = $nextData['nama'];
     $email = $nextData['email'];
@@ -25,6 +26,9 @@ while ($nextData = $result->fetch_assoc()) {
 
     echo "<tr>
         <td>$no</td>
+        <td>
+            <img class=\"w-full\" style=\"width: 100px; height: 100px; border-radius: 9999px; object-fit: cover: object-position: center;\" src=\"$avatar\" />
+        </td>
         <td>$username</td>
         <td>$nama</td>
         <td>$email</td>

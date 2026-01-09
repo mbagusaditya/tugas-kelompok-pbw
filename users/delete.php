@@ -1,5 +1,6 @@
 <?php
 include_once "./../koneksi.php";
+session_start();
 
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
         if ($_POST['METHOD'] === "DELETE") {
@@ -12,7 +13,9 @@ include_once "./../koneksi.php";
             $stmt->execute();
 
             if ($stmt->affected_rows > 0) {
-
+                $_SESSION['flash_message'] = 'User berhasil dihapus';
+            } else {
+                $_SESSION['flash_message'] = 'User gagal dihapus';
             }
         }
     }

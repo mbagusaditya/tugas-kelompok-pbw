@@ -1,6 +1,7 @@
 <?php
 include_once __DIR__ .  "./../koneksi.php";
 include_once __DIR__ . './../upload_foto.php';
+session_start();
 
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
         if ($_POST['METHOD'] !== "PUT") {
@@ -53,10 +54,12 @@ include_once __DIR__ . './../upload_foto.php';
         $stmt->execute($query_params);
 
         if ($stmt->affected_rows > 0) {
+            $_SESSION['flash_message'] = 'User berhasil diubah';
             header('location: admin.php?page=users');
             die;
         }
 
+        $_SESSION['flash_message'] = 'User gagal diubah';
         header('location: admin.php?page=users/edit');
     }
 
@@ -112,3 +115,16 @@ include_once __DIR__ . './../upload_foto.php';
     </form>
 </div>
 </div>
+
+<?php
+    if (isset($_SESSION['flash_message'])) :
+?>
+
+<script>
+alert('<?= $_SESSION['flash_message'] ?>')
+</script>
+
+<?php
+unset($_SESSION['flash_message']);
+endif;
+?>
